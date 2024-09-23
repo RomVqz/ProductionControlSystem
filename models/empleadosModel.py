@@ -1,11 +1,10 @@
 from database.queries import Queries
 
 class EmpleadoModel:
-    def __init__(self, id=None, nombre=None, puesto=None, turno=None, turno_id=None):
+    def __init__(self, id=None, nombre=None, puesto=None, turno_id=None):
         self.id = id
         self.nombre = nombre
         self.puesto = puesto
-        self.turno = turno
         self.turno_id = turno_id
 
     @staticmethod
