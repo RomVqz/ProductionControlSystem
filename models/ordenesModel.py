@@ -1,5 +1,7 @@
-from database.queries import Queries
+from database.config import get_db_connection
 
+connection = get_db_connection()
+cursor = connection.cursor()
 class OrdenModel:
     def __init__(self, id=None, producto_id=None, cantidad=None, fecha_inicio=None, fecha_fin=None, estado=None, cliente_id=None):
         self.id = id
@@ -12,9 +14,12 @@ class OrdenModel:
 
     @staticmethod
     def get_all_ordenes():
-        query = "SELECT * FROM ordenes_produccion"
+        cursor.execute( "SELECT * FROM ordenes_produccion")
         try:
-            return Queries().execute_read_query(query)
+            registros = cursor.fetchall()
+
+            return registros
+
         except Exception as e:
             print(f"Error al obtener todas las órdenes: {e}")
             return []
