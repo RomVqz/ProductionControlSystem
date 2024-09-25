@@ -1,30 +1,35 @@
-class MaquinariaModel:
+class MaquinasModel:
     def __init__(self):
-        # Simulación de datos de maquinaria
-        self.maquinaria = [
-            {"ID": 1, "Nombre": "Torno", "Estado": "Operativo"},
-            {"ID": 2, "Nombre": "Fresadora", "Estado": "Mantenimiento"}
+        # Simulación de datos en lugar de una base de datos real
+        self.maquinas = [
+            {"id": 1, "nombre": "Máquina A", "estado": "Operativa", "last_maintenance": "2023-08-20"},
+            {"id": 2, "nombre": "Máquina B", "estado": "En reparación", "last_maintenance": "2023-09-15"}
         ]
+        self.next_id = 3  # Para asignar IDs únicos
 
-    def get_maquinaria(self):
-        return self.maquinaria
+    def get_maquinas(self):
+        return self.maquinas
 
-    def search_maquinaria(self, query, column):
-        """Realiza una búsqueda de maquinaria en función de la columna seleccionada."""
-        return [maq for maq in self.maquinaria if query.lower() in str(maq[column]).lower()]
+    def add_maquina(self, nombre, estado, last_maintenance):
+        new_maquina = {
+            "id": self.next_id,
+            "nombre": nombre,
+            "estado": estado,
+            "last_maintenance": last_maintenance  # Fecha actual o proporcionada
+        }
+        self.maquinas.append(new_maquina)
+        self.next_id += 1
 
-    def add_maquinaria(self, id, nombre, estado):
-        """Agrega nueva maquinaria a la lista."""
-        self.maquinaria.append({"ID": id, "Nombre": nombre, "Estado": estado})
-
-    def update_maquinaria(self, id, nombre, estado):
-        """Actualiza una maquinaria existente."""
-        for maq in self.maquinaria:
-            if maq["ID"] == id:
-                maq["Nombre"] = nombre
-                maq["Estado"] = estado
+    def update_maquina(self, maquina_id, nombre, estado, last_maintenance):
+        for maquina in self.maquinas:
+            if maquina["id"] == maquina_id:
+                maquina["nombre"] = nombre
+                maquina["estado"] = estado
+                maquina["last_maintenance"] = last_maintenance
                 break
 
-    def delete_maquinaria(self, id):
-        """Elimina una maquinaria por su ID."""
-        self.maquinaria = [maq for maq in self.maquinaria if maq["ID"] != id]
+    def delete_maquina(self, maquina_id):
+        self.maquinas = [m for m in self.maquinas if m["id"] != maquina_id]
+
+    def search_maquinas(self, search_term):
+        return [m for m in self.maquinas if search_term.lower() in m["nombre"].lower()]

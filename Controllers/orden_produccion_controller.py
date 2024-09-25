@@ -1,10 +1,7 @@
-# controllers/ordenes_produccion_controller.py
-
-import tkinter as tk
-from tkinter import messagebox
-from tkcalendar import DateEntry
 from models.orden_produccion_model import OrdenesProduccionModel
 from gui.windows.orden_produccion_view import OrdenesProduccionView
+import tkinter as tk
+from tkinter import messagebox
 
 class OrdenesProduccionController:
     def __init__(self, root):
@@ -57,56 +54,70 @@ class OrdenesProduccionController:
         self.view.search_entry.delete(0, tk.END)
         self.show_ordenes()
 
-    def open_orden_form(self, title, data=None):
-        """Abre un formulario para agregar/editar una orden."""
+    def open_orden_form(self, title, orden_data=None):
+        """Abre un formulario de orden para agregar o editar órdenes."""
         form = tk.Toplevel(self.root)
         form.title(title)
         form.geometry("400x400")
+        form.transient(self.root)
+        form.grab_set()
 
-        tk.Label(form, text="Producto ID").pack(pady=5)
-        producto_id_entry = tk.Entry(form)
-        producto_id_entry.pack(pady=5)
-        producto_id_entry.insert(0, data[1] if data else '')
+        # Campos del formulario
+        tk.Label(form, text="Producto ID:").pack(pady=5)
+        producto_entry = tk.Entry(form)
+        producto_entry.pack(pady=5)
 
-        tk.Label(form, text="Cantidad").pack(pady=5)
+        tk.Label(form, text="Cantidad:").pack(pady=5)
         cantidad_entry = tk.Entry(form)
         cantidad_entry.pack(pady=5)
-        cantidad_entry.insert(0, data[2] if data else '')
 
-        tk.Label(form, text="Fecha Inicio").pack(pady=5)
-        fecha_inicio_entry = DateEntry(form)
+        tk.Label(form, text="Fecha Inicio:").pack(pady=5)
+        fecha_inicio_entry = tk.Entry(form)
         fecha_inicio_entry.pack(pady=5)
-        fecha_inicio_entry.set_date(data[3] if data else '')
 
-        tk.Label(form, text="Fecha Fin").pack(pady=5)
-        fecha_fin_entry = DateEntry(form)
+        tk.Label(form, text="Fecha Fin:").pack(pady=5)
+        fecha_fin_entry = tk.Entry(form)
         fecha_fin_entry.pack(pady=5)
-        fecha_fin_entry.set_date(data[4] if data else '')
 
-        tk.Label(form, text="Estado").pack(pady=5)
+        tk.Label(form, text="Estado:").pack(pady=5)
         estado_entry = tk.Entry(form)
         estado_entry.pack(pady=5)
-        estado_entry.insert(0, data[5] if data else '')
 
-        tk.Label(form, text="Cliente ID").pack(pady=5)
-        cliente_id_entry = tk.Entry(form)
-        cliente_id_entry.pack(pady=5)
-        cliente_id_entry.insert(0, data[6] if data else '')
+        tk.Label(form, text="Cliente ID:").pack(pady=5)
+        cliente_entry = tk.Entry(form)
+        cliente_entry.pack(pady=5)
 
-        def submit_form():
-            producto_id = producto_id_entry.get()
-            cantidad = cantidad_entry.get()
+        # Si es edición, rellenamos los campos
+        if orden_data:
+            producto_entry.insert(0, orden_data[1])
+            cantidad_entry.insert(0, orden_data[2])
+            fecha_inicio_entry.insert(0, orden_data[3])
+            fecha_fin_entry.insert(0, orden_data[4])
+            estado_entry.insert(0, orden_data[5])
+            cliente_entry.insert(0, orden_data[6])
+
+        def submit():
+            producto_id = int(producto_entry.get())
+            cantidad = int(cantidad_entry.get())
             fecha_inicio = fecha_inicio_entry.get()
             fecha_fin = fecha_fin_entry.get()
             estado = estado_entry.get()
-            cliente_id = cliente_id_entry.get()
+            cliente_id = int(cliente_entry.get())
 
-            if data:
-                self.model.update_orden(data[0], producto_id, cantidad, fecha_inicio, fecha_fin, estado, cliente_id)
+            if orden_data:
+                # Actualización de orden
+                self.model.update_orden(orden_data[0], producto_id, cantidad, fecha_inicio, fecha_fin, estado, cliente_id)
             else:
+                # Agregar nueva orden
                 self.model.add_orden(producto_id, cantidad, fecha_inicio, fecha_fin, estado, cliente_id)
+
             self.show_ordenes()
             form.destroy()
 
-        submit_button = tk.Button(form, text="Guardar", command=submit_form)
+        # Botón de envío
+        submit_button = tk.Button(form, text="Guardar", command=submit)
         submit_button.pack(pady=10)
+
+        # Botón de cancelar
+        cancel_button = tk.Button(form, text="Cancelar", command=form.destroy)
+        cancel_button.pack(pady=5)

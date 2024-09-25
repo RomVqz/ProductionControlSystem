@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import Menu
 from Controllers.material_controller import MaterialsController
-from Controllers.empleado_controller import EmpleadoController  # Nombre corregido
-from Controllers.maquinaria_controller import MaquinariaController
-from Controllers.orden_produccion_controller import OrdenesProduccionController
+from Controllers.empleado_controller import EmpleadoController
+from Controllers.maquinaria_controller import MaquinaController
+from Controllers.orden_produccion_controller import OrdenesProduccionController  # Importar correctamente
 from Controllers.producto_controller import ProductoController
 
 # Función para mostrar el menú de Materiales
@@ -27,7 +27,7 @@ def show_employee_menu():
 # Función para mostrar el menú de Maquinaria
 def show_machinery_menu():
     clear_container()
-    maquinaria_controller = MaquinariaController(content_frame)
+    maquinaria_controller = MaquinaController(content_frame)
     maquinaria_controller.get_view().pack(expand=True, fill="both")
 
 # Función para desplegar el menú "Materia" con subopciones "Materiales" y "Productos"
@@ -55,7 +55,7 @@ def show_dashboard():
 # Función para mostrar el menú de Órdenes de Producción
 def show_produccion_menu():
     clear_container()
-    ordenes_controller = OrdenesProduccionController(content_frame)  # Instanciar el controlador
+    ordenes_controller = OrdenesProduccionController(content_frame)  # Instanciar el controlador de órdenes de producción
     ordenes_controller.get_view().pack(expand=True, fill="both")  # Mostrar la vista
 
 # Función para limpiar el contenido del container central

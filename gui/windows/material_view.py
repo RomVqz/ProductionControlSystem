@@ -1,4 +1,4 @@
-# gui/windows/materiales_view.py
+# gui/windows/material_view.py
 
 import tkinter as tk
 from tkinter import ttk
@@ -6,7 +6,7 @@ from tkinter import ttk
 class MaterialsView:
     def __init__(self, parent, controller):
         self.frame = tk.Frame(parent, bg="#f0f4f7")
-        self.controller = controller
+        self.controller = controller  # Referencia al controlador
 
         # Barra de búsqueda
         search_frame = tk.Frame(self.frame, bg="#f0f4f7")
@@ -14,7 +14,7 @@ class MaterialsView:
         tk.Label(search_frame, text="Buscar Material:", bg="#f0f4f7").pack(side="left")
         self.search_entry = tk.Entry(search_frame)
         self.search_entry.pack(side="left", padx=5)
-        search_button = tk.Button(search_frame, text="Buscar", command=self.controller.filter_materiales)
+        search_button = tk.Button(search_frame, text="Buscar", command=self.controller.filter_materials)
         search_button.pack(side="left", padx=5)
         clear_button = tk.Button(search_frame, text="Limpiar", command=self.controller.clear_filters)
         clear_button.pack(side="left", padx=5)
@@ -49,12 +49,13 @@ class MaterialsView:
                                   bg="#f44336", fg="white", command=self.controller.delete_material)
         delete_button.pack(side="left", padx=5)
 
-    def display_materiales(self, data):
+    def display_materials(self, data):
         """Muestra los materiales en la tabla"""
         for item in self.tree.get_children():
             self.tree.delete(item)
         for material in data:
-            self.tree.insert("", "end", values=(material["ID"], material["Nombre"], material["Cantidad_Disponible"], material["Stock_Minimo"]))
+            self.tree.insert("", "end", values=(material["ID"], material["Nombre"], material["Cantidad_Disponible"],
+                                                material["Stock_Minimo"]))
 
     def get_search_entry(self):
         """Obtiene el texto ingresado en el campo de búsqueda."""
