@@ -1,63 +1,71 @@
+# gui/windows/materiales_view.py
+
 import tkinter as tk
 from tkinter import ttk
 
-class MaterialView:
-    def __init__(self, parent):
-        self.frame = tk.Frame(parent)
+class MaterialsView:
+    def __init__(self, parent, controller):
+        self.frame = tk.Frame(parent, bg="#f0f4f7")
+        self.controller = controller
 
-    def setup_ui(self, controller):
-        """Configura la interfaz de usuario."""
-        search_frame = tk.Frame(self.frame)
-        search_frame.pack(side="top", fill="x", pady=10)
-
-        search_label = tk.Label(search_frame, text="Buscar:", font=("Arial", 12))
-        search_label.pack(side="left", padx=5)
-
-        self.search_entry = tk.Entry(search_frame, font=("Arial", 12), width=30)
+        # Barra de búsqueda
+        search_frame = tk.Frame(self.frame, bg="#f0f4f7")
+        search_frame.pack(pady=10)
+        tk.Label(search_frame, text="Buscar Material:", bg="#f0f4f7").pack(side="left")
+        self.search_entry = tk.Entry(search_frame)
         self.search_entry.pack(side="left", padx=5)
-
-        filter_label = tk.Label(search_frame, text="Filtro:", font=("Arial", 12))
-        filter_label.pack(side="left", padx=5)
-
-        self.filter_combobox = ttk.Combobox(search_frame, values=["ID", "Nombre", "Cantidad"], font=("Arial", 12), width=15)
-        self.filter_combobox.set("Seleccionar filtro")
-        self.filter_combobox.pack(side="left", padx=5)
-
-        search_button = tk.Button(search_frame, text="Buscar", command=controller.search, font=("Arial", 10), bg="#59708a", fg="white")
+        search_button = tk.Button(search_frame, text="Buscar", command=self.controller.filter_materiales)
         search_button.pack(side="left", padx=5)
+        clear_button = tk.Button(search_frame, text="Limpiar", command=self.controller.clear_filters)
+        clear_button.pack(side="left", padx=5)
 
-        crud_frame = tk.Frame(search_frame)
-        crud_frame.pack(side="right", padx=10)
+        # Tabla de materiales
+        self.tree = ttk.Treeview(self.frame, columns=("ID", "Nombre", "Cantidad_Disponible", "Stock_Minimo"), show="headings")
+        self.tree.heading("ID", text="ID")
+        self.tree.heading("Nombre", text="Nombre")
+        self.tree.heading("Cantidad_Disponible", text="Cantidad Disponible")
+        self.tree.heading("Stock_Minimo", text="Stock Mínimo")
 
-        create_button = tk.Button(crud_frame, text="Crear", command=controller.create_item, font=("Arial", 10), bg="#59708a", fg="white", padx=10)
-        create_button.pack(side="left", padx=5)
+        self.tree.column("ID", width=50)
+        self.tree.column("Nombre", width=150)
+        self.tree.column("Cantidad_Disponible", width=150)
+        self.tree.column("Stock_Minimo", width=150)
 
-        update_button = tk.Button(crud_frame, text="Actualizar", command=controller.update_item, font=("Arial", 10), bg="#59708a", fg="white", padx=10)
-        update_button.pack(side="left", padx=5)
+        self.tree.pack(expand=True, fill="both", padx=20, pady=10)
 
-        delete_button = tk.Button(crud_frame, text="Eliminar", command=controller.delete_item, font=("Arial", 10), bg="#59708a", fg="white", padx=10)
+        # Botones de acción
+        button_frame = tk.Frame(self.frame, bg="#f0f4f7")
+        button_frame.pack(pady=10)
+
+        add_button = tk.Button(button_frame, text="Agregar Material", font=("Arial", 10, "bold"),
+                               bg="#2196F3", fg="white", command=self.controller.add_material)
+        add_button.pack(side="left", padx=5)
+
+        edit_button = tk.Button(button_frame, text="Editar Material", font=("Arial", 10, "bold"),
+                                bg="#FFC107", fg="black", command=self.controller.edit_material)
+        edit_button.pack(side="left", padx=5)
+
+        delete_button = tk.Button(button_frame, text="Eliminar Material", font=("Arial", 10, "bold"),
+                                  bg="#f44336", fg="white", command=self.controller.delete_material)
         delete_button.pack(side="left", padx=5)
 
-        self.material_frame = tk.Frame(self.frame)
-        self.material_frame.pack(fill="both", expand=True)
+    def display_materiales(self, data):
+        """Muestra los materiales en la tabla"""
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+        for material in data:
+            self.tree.insert("", "end", values=(material["ID"], material["Nombre"], material["Cantidad_Disponible"], material["Stock_Minimo"]))
 
-    def display_materia_prima(self, data):
-        """Despliega la lista de materiales."""
-        for widget in self.material_frame.winfo_children():
-            widget.destroy()
+    def get_search_entry(self):
+        """Obtiene el texto ingresado en el campo de búsqueda."""
+        return self.search_entry.get()
 
-        headers = ["ID", "Nombre", "Cantidad"]
-        for i, header in enumerate(headers):
-            label = tk.Label(self.material_frame, text=header, font=("Arial", 12, "bold"), bg="#d9d9d9", padx=10, pady=5)
-            label.grid(row=0, column=i, sticky="nsew")
-
-        for row_num, mat in enumerate(data, start=1):
-            tk.Label(self.material_frame, text=mat["ID"], font=("Arial", 10), padx=10, pady=5).grid(row=row_num, column=0, sticky="nsew")
-            tk.Label(self.material_frame, text=mat["Nombre"], font=("Arial", 10), padx=10, pady=5).grid(row=row_num, column=1, sticky="nsew")
-            tk.Label(self.material_frame, text=mat["Cantidad"], font=("Arial", 10), padx=10, pady=5).grid(row=row_num, column=2, sticky="nsew")
-
-        for i in range(len(headers)):
-            self.material_frame.grid_columnconfigure(i, weight=1)
+    def get_selected_material(self):
+        """Obtiene el material seleccionado en la tabla."""
+        selected_item = self.tree.focus()
+        if selected_item:
+            return self.tree.item(selected_item)['values']
+        return None
 
     def get_frame(self):
         return self.frame

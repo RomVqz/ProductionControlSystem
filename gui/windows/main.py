@@ -1,32 +1,33 @@
 import tkinter as tk
 from tkinter import Menu
-from Controllers.material_controller import MaterialController
-from Controllers.empleado_controller import EmpleadoController
+from Controllers.material_controller import MaterialsController
+from Controllers.empleado_controller import EmployeeController  # Nombre corregido
 from Controllers.maquinaria_controller import MaquinariaController
-from Controllers.orden_produccion_controller import Production_orderController
+from Controllers.orden_produccion_controller import OrdenesProduccionController
 from Controllers.producto_controller import ProductoController
 
+# Función para mostrar el menú de Materiales
 def show_material_menu():
-    clear_container()
-    material_controller = MaterialController(content_frame)
-    material_controller.show_items()
+    clear_container()  # Limpiar el frame antes de agregar contenido nuevo
+    material_controller = MaterialsController(content_frame)  # Usamos el nuevo controlador
+    material_controller.show_materiales()  # Mostramos los materiales
     material_controller.get_view().pack(expand=True, fill="both")
 
+# Función para mostrar el menú de Productos
 def show_product_menu():
-    clear_container()  # Limpiar el frame antes de agregar contenido nuevo
+    clear_container()
     producto_controller = ProductoController(content_frame)
     producto_controller.show_products()
     producto_controller.get_view().pack(expand=True, fill="both")
 
-
-# Función para mostrar empleados
+# Función para mostrar el menú de Empleados
 def show_employee_menu():
     clear_container()
-    empleado_controller = EmpleadoController(content_frame)
-    empleado_controller.show_empleados()
-    empleado_controller.get_view().pack(expand=True, fill="both")
+    employee_controller = EmployeeController(content_frame)  # Asegúrate de usar el nombre correcto
+    employee_controller.show_employees()  # Muestra los empleados
+    employee_controller.get_view().pack(expand=True, fill="both")
 
-# Función para mostrar maquinaria
+# Función para mostrar el menú de Maquinaria
 def show_machinery_menu():
     clear_container()
     maquinaria_controller = MaquinariaController(content_frame)
@@ -53,12 +54,12 @@ def show_dashboard():
     label = tk.Label(content_frame, text="Dashboard", font=("Arial", 24), fg="#333")
     label.pack(expand=True)
 
-# Función para mostrar la orden de producción
-def show_production_order():
+# Función para mostrar el menú de Órdenes de Producción
+def show_produccion_menu():
     clear_container()
-    orden_produccion_controller = Production_orderController(content_frame)
-    orden_produccion_controller.show_production_order()
-    orden_produccion_controller.get_view().pack(expand=True, fill="both")
+    ordenes_controller = OrdenesProduccionController(content_frame)  # Usamos el nuevo controlador
+    ordenes_controller.show_ordenes()  # Mostramos las órdenes de producción
+    ordenes_controller.get_view().pack(expand=True, fill="both")
 
 # Función para limpiar el contenido del container central
 def clear_container():
@@ -79,7 +80,7 @@ button_frame.pack(side="top", fill="x")
 button_style = {"font": ("Arial bold", 11), "bg": "#bfc8d2", "fg": "black", "width": 20, "height": 1}
 
 # Botón "Orden de Producción"
-production_button = tk.Button(button_frame, text="Orden de Producción", command=show_production_order, **button_style)
+production_button = tk.Button(button_frame, text="Orden de Producción", command=show_produccion_menu, **button_style)
 production_button.grid(row=0, column=0, padx=10, pady=5)
 
 # Botón "Materia" que despliega las opciones "Materiales" y "Productos"
