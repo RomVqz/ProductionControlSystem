@@ -1,19 +1,32 @@
-import configparser
-import os
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+import psycopg2
 
-def config(filename=BASE_DIR+'/database.ini', section='postgresql'):
-    # Crear el parser y leer el archivo de configuración
-    parser = configparser.ConfigParser()
-    parser.read(filename)
+def get_db_connection():
+    """Establece y devuelve una conexión a la base de datos PostgreSQL."""
+    hostname = 'localhost'  # Cambia esto si es necesario
+    database = 'NttArneses'
+    username = 'postgres'
+    password = 'Temerario123'
+    port = '5432'  # Puerto por defecto de PostgreSQL
 
-    # Obtener la sección de la base de datos
-    db = {}
-    if parser.has_section(section):
-        params = parser.items(section)
-        for param in params:
-            db[param[0]] = param[1]
-    else:
-        raise Exception(f'Section {section} not found in the {filename} file')
+    try:
+        # Establecer la conexión
+        conn = psycopg2.connect(
+            host=hostname,
+            database=database,
+            user=username,
+            password=password,
+            port=port
+        )
+        print("Conexión a la base de datos establecida.")
+        return conn
+    except Exception as error:
+        print("Error al conectar a la base de datos:", error)
+        return None
 
-    return db
+def close_db_connection(conn):
+    """Cierra la conexión a la base de datos."""
+    if conn:
+        conn.close()
+        print("Conexión a la base de datos cerrada.")
+
+

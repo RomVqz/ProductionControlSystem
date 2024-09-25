@@ -1,39 +1,94 @@
 # models/empleado_model.py
+from database.config import get_db_connection
+import psycopg2
 
 class EmpleadoModel:
     def __init__(self):
-        # Simulación de datos
-        self.empleados = [
-            {"id": 1, "nombre": "Juan Pérez", "puesto": "Gerente", "turno": "Mañana", "turno_id": 101},
-            {"id": 2, "nombre": "Ana Gómez", "puesto": "Operador", "turno": "Noche", "turno_id": 102}
-        ]
-        self.next_id = 3  # Para asignar IDs únicos
+        self.connection = get_db_connection()
+        self.cursor = self.connection.cursor()
 
     def get_empleados(self):
-        return self.empleados
+        try:
+            # Consulta SQL para obtener todos los empleados
+            self.cursor.execute("SELECT id, nombre, puesto, turno, turno_id FROM empleados")
+            rows = self.cursor.fetchall()
+
+            # Convertir el resultado de la consulta a una lista de diccionarios
+            empleados = []
+            for row in rows:
+                empleado = {
+                    "id": row[0],
+                    "nombre": row[1],
+                    "puesto": row[2],
+                    "turno": row[3],
+                    "turno_id": row[4]
+                }
+                empleados.append(empleado)
+            return empleados
+        except psycopg2.Error as e:
+            print(f"Error al obtener los empleados: {e}")
+            return []
 
     def add_empleado(self, nombre, puesto, turno, turno_id):
-        nuevo_empleado = {
-            "id": self.next_id,
-            "nombre": nombre,
-            "puesto": puesto,
-            "turno": turno,
-            "turno_id": turno_id
-        }
-        self.empleados.append(nuevo_empleado)
-        self.next_id += 1
+        try:
+            # Consulta SQL para insertar un nuevo empleado
+            insert_query = """
+               INSERT INTO empleados (nombre, puesto, turno, turno_id)
+               VALUES (%s, %s, %s, %s)
+               """
+            # Ejecutar la consulta con los valores correspondientes
+            self.cursor.execute(insert_query, (nombre, puesto, turno, turno_id))
+
+            # Confirmar los cambios en la base de datos
+            self.connection.commit()
+            print("Nuevo empleado agregado correctamente.")
+        except psycopg2.Error as e:
+            # En caso de error, hacer rollback para deshacer la transacción
+            self.connection.rollback()
+            print(f"Error al agregar el empleado: {e}")
 
     def update_empleado(self, empleado_id, nombre, puesto, turno, turno_id):
-        for empleado in self.empleados:
-            if empleado["id"] == empleado_id:
-                empleado["nombre"] = nombre
-                empleado["puesto"] = puesto
-                empleado["turno"] = turno
-                empleado["turno_id"] = turno_id
-                break
+        try:
+            # Consulta SQL para actualizar un empleado
+            update_query = """
+               UPDATE empleados
+               SET nombre = %s, puesto = %s, turno = %s, turno_id = %s
+               WHERE id = %s
+               """
+            # Ejecutar la consulta con los valores correspondientes
+            self.cursor.execute(update_query, (nombre, puesto, turno, turno_id, empleado_id))
+
+            # Confirmar los cambios en la base de datos
+            self.connection.commit()
+            print(f"Empleado con ID {empleado_id} actualizado correctamente.")
+        except psycopg2.Error as e:
+            # En caso de error, hacer rollback para deshacer la transacción
+            self.connection.rollback()
+            print(f"Error al actualizar el empleado: {e}")
 
     def delete_empleado(self, empleado_id):
-        self.empleados = [e for e in self.empleados if e["id"] != empleado_id]
+        try:
+            # Consulta SQL para eliminar un empleado por su ID
+            delete_query = """
+               DELETE FROM empleados
+               WHERE id = %s
+               """
+            # Ejecutar la consulta con el ID correspondiente
+            self.cursor.execute(delete_query, (empleado_id,))
+
+            # Confirmar los cambios en la base de datos
+            self.connection.commit()
+            print(f"Empleado con ID {empleado_id} eliminado correctamente.")
+        except psycopg2.Error as e:
+            # En caso de error, hacer rollback para deshacer la transacción
+            self.connection.rollback()
+            print(f"Error al eliminar el empleado: {e}")
 
     def search_empleados(self, search_term):
-        return [e for e in self.empleados if search_term.lower() in e["nombre"].lower()]
+        search_term = search_term.lower()
+        return [
+            p for p in self.get_empleados()
+            if (search_term in str(p["id"]).lower() or
+                search_term in p["nombre"].lower())
+
+        ]
