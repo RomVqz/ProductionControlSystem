@@ -3,9 +3,9 @@ import psycopg2
 def get_db_connection():
     """Establece y devuelve una conexión a la base de datos PostgreSQL."""
     hostname = 'localhost'  # Cambia esto si es necesario
-    database = 'NttArneses'
+    database = 'BD'
     username = 'postgres'
-    password = 'Temerario123'
+    password = '12345678'
     port = '5432'  # Puerto por defecto de PostgreSQL
 
     try:

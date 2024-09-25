@@ -1,5 +1,8 @@
 import tkinter as tk
 from tkinter import Menu
+import sys
+
+sys.path.append('D:/NTT/ProductionControlSystem')
 
 from Controllers.dashboard_controller import StatisticsController
 from Controllers.material_controller import MaterialsController
@@ -57,10 +60,11 @@ def show_assignment_menu():
 
 
 # Función para mostrar el dashboard
+
 def show_dashboard():
-    clear_container()
-    dashboard_controller = StatisticsController(content_frame)
-    dashboard_controller.get_view().pack(expand=True, fill="both")
+    clear_container()  # Limpiar el frame antes de agregar contenido nuevo
+    dashboard_controller = StatisticsController(content_frame)  # Instanciar el controlador
+    dashboard_controller.get_view().pack(expand=True, fill="both")  # Mostrar la vista
 
 
 # Función para mostrar el menú de Órdenes de Producción
