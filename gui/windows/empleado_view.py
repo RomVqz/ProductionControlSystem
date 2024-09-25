@@ -1,97 +1,73 @@
+# gui/windows/empleado_view.py
+
 import tkinter as tk
 from tkinter import ttk
 
-
 class EmpleadoView:
-    def __init__(self, parent):
-        self.frame = tk.Frame(parent, bg="white")
-
-    def setup_ui(self, controller):
-        """Configura la interfaz de usuario."""
-        # Frame para la barra de búsqueda, filtros y botones CRUD
-        search_frame = tk.Frame(self.frame, bg="white")
-        search_frame.pack(side="top", fill="x", pady=10)
+    def __init__(self, parent, controller):
+        self.frame = tk.Frame(parent, bg="#f0f4f7")
+        self.controller = controller
 
         # Barra de búsqueda
-        search_label = tk.Label(search_frame, text="Buscar:", font=("Arial", 12), bg="white")
-        search_label.pack(side="left", padx=5)
-
-        self.search_entry = tk.Entry(search_frame, font=("Arial", 12), width=30)
+        search_frame = tk.Frame(self.frame, bg="#f0f4f7")
+        search_frame.pack(pady=10)
+        tk.Label(search_frame, text="Buscar Empleado:", bg="#f0f4f7").pack(side="left")
+        self.search_entry = tk.Entry(search_frame)
         self.search_entry.pack(side="left", padx=5)
-
-        # Filtro por columnas
-        filter_label = tk.Label(search_frame, text="Filtro:", font=("Arial", 12), bg="white")
-        filter_label.pack(side="left", padx=5)
-
-        self.filter_combobox = ttk.Combobox(search_frame, values=["ID", "Nombre", "Puesto"], font=("Arial", 12),
-                                            width=15)
-        self.filter_combobox.set("Seleccionar filtro")
-        self.filter_combobox.pack(side="left", padx=5)
-
-        # Botón de búsqueda
-        search_button = tk.Button(search_frame, text="Buscar", command=controller.search_empleados, font=("Arial", 10),
-                                  bg="#59708a", fg="white")
+        search_button = tk.Button(search_frame, text="Buscar", command=self.controller.filter_empleados)
         search_button.pack(side="left", padx=5)
-
-        # Botones CRUD
-        crud_frame = tk.Frame(search_frame, bg="white")
-        crud_frame.pack(side="right", padx=10)
-
-        create_button = tk.Button(crud_frame, text="Crear", command=controller.create_empleado, font=("Arial", 10),
-                                  bg="#59708a", fg="white", padx=10)
-        create_button.pack(side="left", padx=5)
-
-        update_button = tk.Button(crud_frame, text="Actualizar", command=controller.update_empleado, font=("Arial", 10),
-                                  bg="#59708a", fg="white", padx=10)
-        update_button.pack(side="left", padx=5)
-
-        delete_button = tk.Button(crud_frame, text="Eliminar", command=controller.delete_empleado, font=("Arial", 10),
-                                  bg="#59708a", fg="white", padx=10)
-        delete_button.pack(side="left", padx=5)
+        clear_button = tk.Button(search_frame, text="Limpiar", command=self.controller.clear_filters)
+        clear_button.pack(side="left", padx=5)
 
         # Tabla de empleados
-        self.container = tk.Frame(self.frame, bg="white")
-        self.container.pack(fill="both", expand=True)
+        self.tree = ttk.Treeview(self.frame, columns=("ID", "Nombre", "Puesto", "Turno", "Turno_ID"), show="headings")
+        self.tree.heading("ID", text="ID")
+        self.tree.heading("Nombre", text="Nombre")
+        self.tree.heading("Puesto", text="Puesto")
+        self.tree.heading("Turno", text="Turno")
+        self.tree.heading("Turno_ID", text="Turno ID")
 
-        self.canvas = tk.Canvas(self.container)
-        self.scrollbar = tk.Scrollbar(self.container, orient="vertical", command=self.canvas.yview)
-        self.scrollable_frame = tk.Frame(self.canvas)
+        self.tree.column("ID", width=50)
+        self.tree.column("Nombre", width=150)
+        self.tree.column("Puesto", width=150)
+        self.tree.column("Turno", width=100)
+        self.tree.column("Turno_ID", width=80)
 
-        self.scrollable_frame.bind(
-            "<Configure>",
-            lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all"))
-        )
+        self.tree.pack(expand=True, fill="both", padx=20, pady=10)
 
-        self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
-        self.canvas.configure(yscrollcommand=self.scrollbar.set)
+        # Botones de acción
+        button_frame = tk.Frame(self.frame, bg="#f0f4f7")
+        button_frame.pack(pady=10)
 
-        self.canvas.pack(side="left", fill="both", expand=True)
-        self.scrollbar.pack(side="right", fill="y")
+        add_button = tk.Button(button_frame, text="Agregar Empleado", font=("Arial", 10, "bold"),
+                               bg="#2196F3", fg="white", command=self.controller.add_empleado)
+        add_button.pack(side="left", padx=5)
+
+        edit_button = tk.Button(button_frame, text="Editar Empleado", font=("Arial", 10, "bold"),
+                                bg="#FFC107", fg="black", command=self.controller.edit_empleado)
+        edit_button.pack(side="left", padx=5)
+
+        delete_button = tk.Button(button_frame, text="Eliminar Empleado", font=("Arial", 10, "bold"),
+                                  bg="#f44336", fg="white", command=self.controller.delete_empleado)
+        delete_button.pack(side="left", padx=5)
 
     def display_empleados(self, data):
-        """Despliega la lista de empleados en la tabla."""
-        for widget in self.scrollable_frame.winfo_children():
-            widget.destroy()
+        """Muestra los empleados en la tabla"""
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+        for empleado in data:
+            self.tree.insert("", "end", values=(empleado["id"], empleado["nombre"], empleado["puesto"], empleado["turno"], empleado["turno_id"]))
 
-        # Encabezados de la tabla
-        headers = ["ID", "Nombre", "Puesto"]
-        for i, header in enumerate(headers):
-            label = tk.Label(self.scrollable_frame, text=header, font=("Arial", 12, "bold"), bg="#d9d9d9", padx=10,
-                             pady=5)
-            label.grid(row=0, column=i, sticky="nsew")
+    def get_search_entry(self):
+        """Obtiene el texto ingresado en el campo de búsqueda."""
+        return self.search_entry.get()
 
-        # Filas de empleados
-        for row_num, empleado in enumerate(data, start=1):
-            tk.Label(self.scrollable_frame, text=empleado["ID"], font=("Arial", 10), bg="white", padx=10, pady=5).grid(
-                row=row_num, column=0, sticky="nsew")
-            tk.Label(self.scrollable_frame, text=empleado["Nombre"], font=("Arial", 10), bg="white", padx=10,
-                     pady=5).grid(row=row_num, column=1, sticky="nsew")
-            tk.Label(self.scrollable_frame, text=empleado["Puesto"], font=("Arial", 10), bg="white", padx=10,
-                     pady=5).grid(row=row_num, column=2, sticky="nsew")
-
-        # Redimensionar columnas
-        for i in range(len(headers)):
-            self.scrollable_frame.grid_columnconfigure(i, weight=1)
+    def get_selected_empleado(self):
+        """Obtiene el empleado seleccionado en la tabla."""
+        selected_item = self.tree.focus()
+        if selected_item:
+            return self.tree.item(selected_item)['values']
+        return None
 
     def get_frame(self):
         return self.frame

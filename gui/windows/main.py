@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import Menu
 from Controllers.material_controller import MaterialsController
-from Controllers.empleado_controller import EmployeeController  # Nombre corregido
+from Controllers.empleado_controller import EmpleadoController  # Nombre corregido
 from Controllers.maquinaria_controller import MaquinariaController
 from Controllers.orden_produccion_controller import OrdenesProduccionController
 from Controllers.producto_controller import ProductoController
@@ -9,29 +9,25 @@ from Controllers.producto_controller import ProductoController
 # Función para mostrar el menú de Materiales
 def show_material_menu():
     clear_container()  # Limpiar el frame antes de agregar contenido nuevo
-    material_controller = MaterialsController(content_frame)  # Usamos el nuevo controlador
-    material_controller.show_materiales()  # Mostramos los materiales
-    material_controller.get_view().pack(expand=True, fill="both")
+    material_controller = MaterialsController(content_frame)  # Instanciar el controlador
+    material_controller.get_view().pack(expand=True, fill="both")  # Mostrar la vista
 
 # Función para mostrar el menú de Productos
 def show_product_menu():
     clear_container()
     producto_controller = ProductoController(content_frame)
-    producto_controller.show_products()
     producto_controller.get_view().pack(expand=True, fill="both")
 
 # Función para mostrar el menú de Empleados
 def show_employee_menu():
     clear_container()
-    employee_controller = EmployeeController(content_frame)  # Asegúrate de usar el nombre correcto
-    employee_controller.show_employees()  # Muestra los empleados
-    employee_controller.get_view().pack(expand=True, fill="both")
+    empleado_controller = EmpleadoController(content_frame)
+    empleado_controller.get_view().pack(expand=True, fill="both")
 
 # Función para mostrar el menú de Maquinaria
 def show_machinery_menu():
     clear_container()
     maquinaria_controller = MaquinariaController(content_frame)
-    maquinaria_controller.show_maquinaria()
     maquinaria_controller.get_view().pack(expand=True, fill="both")
 
 # Función para desplegar el menú "Materia" con subopciones "Materiales" y "Productos"
@@ -39,6 +35,7 @@ def show_materia_menu():
     materia_menu = Menu(materia_button, tearoff=0)
     materia_menu.add_command(label="Materiales", command=show_material_menu)
     materia_menu.add_command(label="Productos", command=show_product_menu)
+    # Mostrar el menú justo debajo del botón "Materia"
     materia_menu.post(materia_button.winfo_rootx(), materia_button.winfo_rooty() + materia_button.winfo_height())
 
 # Función para desplegar el menú "Asignación" con subopciones "Empleados" y "Maquinaria"
@@ -46,6 +43,7 @@ def show_assignment_menu():
     assignment_menu = Menu(assignment_button, tearoff=0)
     assignment_menu.add_command(label="Empleados", command=show_employee_menu)
     assignment_menu.add_command(label="Maquinaria", command=show_machinery_menu)
+    # Mostrar el menú justo debajo del botón "Asignación"
     assignment_menu.post(assignment_button.winfo_rootx(), assignment_button.winfo_rooty() + assignment_button.winfo_height())
 
 # Función para mostrar el dashboard
@@ -57,12 +55,12 @@ def show_dashboard():
 # Función para mostrar el menú de Órdenes de Producción
 def show_produccion_menu():
     clear_container()
-    ordenes_controller = OrdenesProduccionController(content_frame)  # Usamos el nuevo controlador
-    ordenes_controller.show_ordenes()  # Mostramos las órdenes de producción
-    ordenes_controller.get_view().pack(expand=True, fill="both")
+    ordenes_controller = OrdenesProduccionController(content_frame)  # Instanciar el controlador
+    ordenes_controller.get_view().pack(expand=True, fill="both")  # Mostrar la vista
 
 # Función para limpiar el contenido del container central
 def clear_container():
+    """Elimina todos los widgets existentes dentro del content_frame para preparar el espacio."""
     for widget in content_frame.winfo_children():
         widget.destroy()
 
@@ -76,7 +74,7 @@ root.configure(bg="#a5b1be")  # Fondo de la ventana principal
 button_frame = tk.Frame(root, bg="#59708a", height=50)
 button_frame.pack(side="top", fill="x")
 
-# Creación de botones con estilo
+# Estilo común para los botones
 button_style = {"font": ("Arial bold", 11), "bg": "#bfc8d2", "fg": "black", "width": 20, "height": 1}
 
 # Botón "Orden de Producción"
