@@ -1,6 +1,8 @@
 # models/empleado_model.py
 from database.config import get_db_connection
 import psycopg2
+from tkinter import messagebox
+from datetime import datetime
 
 class EmpleadoModel:
     def __init__(self):
@@ -26,7 +28,7 @@ class EmpleadoModel:
                 empleados.append(empleado)
             return empleados
         except psycopg2.Error as e:
-            print(f"Error al obtener los empleados: {e}")
+            messagebox.showerror(f"Error al obtener los empleados: {e}")
             return []
 
     def add_empleado(self, nombre, puesto, turno, turno_id):
@@ -41,11 +43,12 @@ class EmpleadoModel:
 
             # Confirmar los cambios en la base de datos
             self.connection.commit()
-            print("Nuevo empleado agregado correctamente.")
+            messagebox.showinfo("Nuevo empleado agregado correctamente.")
+
         except psycopg2.Error as e:
             # En caso de error, hacer rollback para deshacer la transacción
             self.connection.rollback()
-            print(f"Error al agregar el empleado: {e}")
+            messagebox.showerror(f"Error al agregar el empleado: {e}")
 
     def update_empleado(self, empleado_id, nombre, puesto, turno, turno_id):
         try:
@@ -60,11 +63,11 @@ class EmpleadoModel:
 
             # Confirmar los cambios en la base de datos
             self.connection.commit()
-            print(f"Empleado con ID {empleado_id} actualizado correctamente.")
+            messagebox.showinfo(f"Empleado con ID {empleado_id} actualizado correctamente.")
         except psycopg2.Error as e:
             # En caso de error, hacer rollback para deshacer la transacción
             self.connection.rollback()
-            print(f"Error al actualizar el empleado: {e}")
+            messagebox.showerror(f"Error al actualizar el empleado: {e}")
 
     def delete_empleado(self, empleado_id):
         try:
@@ -78,11 +81,11 @@ class EmpleadoModel:
 
             # Confirmar los cambios en la base de datos
             self.connection.commit()
-            print(f"Empleado con ID {empleado_id} eliminado correctamente.")
+            messagebox.showinfo(f"Empleado con ID {empleado_id} eliminado correctamente.")
         except psycopg2.Error as e:
             # En caso de error, hacer rollback para deshacer la transacción
             self.connection.rollback()
-            print(f"Error al eliminar el empleado: {e}")
+            messagebox.showerror(f"Error al eliminar el empleado: {e}")
 
     def search_empleados(self, search_term):
         search_term = search_term.lower()

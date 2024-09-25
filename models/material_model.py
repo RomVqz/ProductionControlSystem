@@ -2,6 +2,8 @@
 from database.config import get_db_connection
 import psycopg2
 from datetime import datetime
+from tkinter import messagebox
+from datetime import datetime
 
 class MaterialsModel:
     def __init__(self):
@@ -26,7 +28,7 @@ class MaterialsModel:
                 materiales.append(material)
             return materiales
         except psycopg2.Error as e:
-            print(f"Error al obtener los materiales: {e}")
+            messagebox.showerror(f"Error al obtener los materiales: {e}")
             return []
 
     def add_material(self, nombre, cantidad_disponible, stock_minimo):
@@ -41,11 +43,11 @@ class MaterialsModel:
 
             # Confirmar los cambios en la base de datos
             self.connection.commit()
-            print(f"Material '{nombre}' agregado correctamente.")
+            messagebox.showinfo(f"Material '{nombre}' agregado correctamente.")
         except psycopg2.Error as e:
             # En caso de error, hacer rollback para deshacer la transacción
             self.connection.rollback()
-            print(f"Error al agregar el material: {e}")
+            messagebox.showerror(f"Error al agregar el material: {e}")
 
     def update_material(self, material_id, nombre, cantidad_disponible, stock_minimo):
         try:
@@ -60,11 +62,11 @@ class MaterialsModel:
 
             # Confirmar los cambios en la base de datos
             self.connection.commit()
-            print(f"Material con ID {material_id} actualizado correctamente.")
+            messagebox.showinfo(f"Material con ID {material_id} actualizado correctamente.")
         except psycopg2.Error as e:
             # En caso de error, hacer rollback para deshacer la transacción
             self.connection.rollback()
-            print(f"Error al actualizar el material: {e}")
+            messagebox.showerror(f"Error al actualizar el material: {e}")
 
     def delete_material(self, material_id):
         try:
@@ -78,11 +80,11 @@ class MaterialsModel:
 
             # Confirmar los cambios en la base de datos
             self.connection.commit()
-            print(f"Material con ID {material_id} eliminado correctamente.")
+            messagebox.showinfo(f"Material con ID {material_id} eliminado correctamente.")
         except psycopg2.Error as e:
             # En caso de error, hacer rollback para deshacer la transacción
             self.connection.rollback()
-            print(f"Error al eliminar el material: {e}")
+            messagebox.showerror(f"Error al eliminar el material: {e}")
 
     def search_materials(self, search_term):
         search_term = search_term.lower()

@@ -1,5 +1,7 @@
 from database.config import get_db_connection
 import psycopg2
+import tkinter as tk
+from tkinter import messagebox
 from datetime import datetime
 
 
@@ -29,7 +31,7 @@ class OrdenesProduccionModel:
                 ordenes.append(orden)
             return ordenes
         except psycopg2.Error as e:
-            print(f"Error al obtener las órdenes: {e}")
+            messagebox.showerror(f"Error al obtener las órdenes: {e}")
             return []
 
     def add_orden(self, producto_id, cantidad, fecha_inicio, fecha_fin, estado, cliente_id):
@@ -44,11 +46,13 @@ class OrdenesProduccionModel:
 
             # Confirmar los cambios en la base de datos
             self.connection.commit()
-            print("Nueva orden de producción agregada correctamente.")
+            messagebox.showinfo("Exito", "Orden de produccion Creada con exito")
+
         except psycopg2.Error as e:
             # En caso de error, hacer rollback para deshacer la transacción
             self.connection.rollback()
-            print(f"Error al agregar la orden de producción: {e}")
+            messagebox.showerror("Error", f"{e}")
+
 
     def update_orden(self, orden_id, producto_id, cantidad, fecha_inicio, fecha_fin, estado, cliente_id):
         try:
@@ -63,11 +67,12 @@ class OrdenesProduccionModel:
 
             # Confirmar los cambios en la base de datos
             self.connection.commit()
-            print(f"Orden de producción con ID {orden_id} actualizada correctamente.")
+
+            messagebox.showinfo("Exito", f"Orden de producción con ID {orden_id} actualizada correctamente.")
         except psycopg2.Error as e:
             # En caso de error, hacer rollback para deshacer la transacción
             self.connection.rollback()
-            print(f"Error al actualizar la orden de producción: {e}")
+            messagebox.showerror("Error", f"{e}")
 
     def delete_orden(self, orden_id):
         try:
@@ -81,11 +86,11 @@ class OrdenesProduccionModel:
 
             # Confirmar los cambios en la base de datos
             self.connection.commit()
-            print(f"Orden de producción con ID {orden_id} eliminada correctamente.")
+            messagebox.showinfo("Exito", f"Orden de producción con ID {orden_id} eLiminada correctamente.")
         except psycopg2.Error as e:
             # En caso de error, hacer rollback para deshacer la transacción
             self.connection.rollback()
-            print(f"Error al eliminar la orden de producción: {e}")
+            messagebox.showerror("Error", f"{e}")
 
     def search_ordenes(self, search_term):
         search_term = search_term.lower()

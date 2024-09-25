@@ -2,7 +2,8 @@
 from database.config import get_db_connection
 import psycopg2
 from datetime import datetime
-
+from tkinter import messagebox
+from datetime import datetime
 
 
 class ProductsModel:
@@ -31,7 +32,7 @@ class ProductsModel:
                 products.append(product)
             return products
         except psycopg2.Error as e:
-            print(f"Error al obtener los productos: {e}")
+            messagebox.showerror(f"Error al obtener los productos: {e}")
             return []
         finally:
             # No cerramos la conexión aquí para mantenerla abierta mientras el modelo esté en uso
@@ -52,11 +53,11 @@ class ProductsModel:
 
             # Confirmar los cambios en la base de datos
             self.connection.commit()
-            print(f"Producto '{nombre}' agregado correctamente.")
+            messagebox.showinfo(f"Producto '{nombre}' agregado correctamente.")
         except psycopg2.Error as e:
             # En caso de error, hacer rollback para deshacer la transacción
             self.connection.rollback()
-            print(f"Error al agregar el producto: {e}")
+            messagebox.showerror(f"Error al agregar el producto: {e}")
 
     def update_product(self, product_id, nombre, descripcion, precio):
         try:
@@ -74,11 +75,11 @@ class ProductsModel:
 
             # Confirmar los cambios en la base de datos
             self.connection.commit()
-            print(f"Producto con ID {product_id} actualizado correctamente.")
+            messagebox.showinfo(f"Producto con ID {product_id} actualizado correctamente.")
         except psycopg2.Error as e:
             # En caso de error, hacer rollback para deshacer la transacción
             self.connection.rollback()
-            print(f"Error al actualizar el producto: {e}")
+            messagebox.showerror(f"Error al actualizar el producto: {e}")
 
     def delete_product(self, product_id):
         try:
@@ -92,11 +93,11 @@ class ProductsModel:
 
             # Confirmar los cambios en la base de datos
             self.connection.commit()
-            print(f"Producto con ID {product_id} eliminado correctamente.")
+            messagebox.showinfo(f"Producto con ID {product_id} eliminado correctamente.")
         except psycopg2.Error as e:
             # En caso de error, hacer rollback para deshacer la transacción
             self.connection.rollback()
-            print(f"Error al eliminar el producto: {e}")
+            messagebox.showerror(f"Error al eliminar el producto: {e}")
 
     def search_products(self, search_term):
         search_term = search_term.lower()

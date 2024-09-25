@@ -1,5 +1,8 @@
 from database.config import get_db_connection
 import psycopg2
+from tkinter import messagebox
+from datetime import datetime
+
 
 class MaquinasModel:
     def __init__(self):
@@ -24,7 +27,7 @@ class MaquinasModel:
                 maquinas.append(maquina)
             return maquinas
         except psycopg2.Error as e:
-            print(f"Error al obtener las máquinas: {e}")
+            messagebox.showerror(f"Error al obtener las máquinas: {e}")
             return []
 
     def add_maquina(self, nombre, estado, last_maintenance):
@@ -39,11 +42,11 @@ class MaquinasModel:
 
             # Confirmar los cambios en la base de datos
             self.connection.commit()
-            print("Nueva máquina agregada correctamente.")
+            messagebox.showinfo("Nueva máquina agregada correctamente.")
         except psycopg2.Error as e:
             # En caso de error, hacer rollback para deshacer la transacción
             self.connection.rollback()
-            print(f"Error al agregar la máquina: {e}")
+            messagebox.showerror(f"Error al agregar la máquina: {e}")
 
     def update_maquina(self, maquina_id, nombre, estado, last_maintenance):
         try:
@@ -58,11 +61,11 @@ class MaquinasModel:
 
             # Confirmar los cambios en la base de datos
             self.connection.commit()
-            print(f"Máquina con ID {maquina_id} actualizada correctamente.")
+            messagebox.showinfo(f"Máquina con ID {maquina_id} actualizada correctamente.")
         except psycopg2.Error as e:
             # En caso de error, hacer rollback para deshacer la transacción
             self.connection.rollback()
-            print(f"Error al actualizar la máquina: {e}")
+            messagebox.showerror(f"Error al actualizar la máquina: {e}")
 
     def delete_maquina(self, maquina_id):
         try:
@@ -76,11 +79,11 @@ class MaquinasModel:
 
             # Confirmar los cambios en la base de datos
             self.connection.commit()
-            print(f"Máquina con ID {maquina_id} eliminada correctamente.")
+            messagebox.showinfo(f"Máquina con ID {maquina_id} eliminada correctamente.")
         except psycopg2.Error as e:
             # En caso de error, hacer rollback para deshacer la transacción
             self.connection.rollback()
-            print(f"Error al eliminar la máquina: {e}")
+            messagebox.showerror(f"Error al eliminar la máquina: {e}")
 
     def search_maquinas(self, search_term):
         search_term = search_term.lower()
