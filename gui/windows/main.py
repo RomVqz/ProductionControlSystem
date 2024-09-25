@@ -6,24 +6,18 @@ from Controllers.maquinaria_controller import MaquinariaController
 from Controllers.orden_produccion_controller import Production_orderController
 from Controllers.producto_controller import ProductoController
 
-# Función para mostrar materiales
 def show_material_menu():
-    # Crear una instancia de MaterialController
-    material_controller = MaterialController(root)
-
-    # Configurar el modo para mostrar Materia Prima
-    material_controller.mode = "materia_prima"  # Indica que el modo es materia prima
-
-    # Mostrar los materiales (materia prima en este caso)
-    material_controller.show_items()  # Utilizar show_items() en lugar de show_materia_prima()
-
-
-# Función para mostrar productosr
-def show_product_menu():
     clear_container()
+    material_controller = MaterialController(content_frame)
+    material_controller.show_items()
+    material_controller.get_view().pack(expand=True, fill="both")
+
+def show_product_menu():
+    clear_container()  # Limpiar el frame antes de agregar contenido nuevo
     producto_controller = ProductoController(content_frame)
     producto_controller.show_products()
     producto_controller.get_view().pack(expand=True, fill="both")
+
 
 # Función para mostrar empleados
 def show_employee_menu():
