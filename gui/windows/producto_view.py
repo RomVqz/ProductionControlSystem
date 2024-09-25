@@ -3,47 +3,74 @@
 import tkinter as tk
 from tkinter import ttk
 
-
 class ProductsView:
-    def __init__(self, parent):
-        """
-        Inicializa la vista de productos, crea un frame donde se mostrará la tabla de productos.
-        """
-        self.frame = tk.Frame(parent)
-        self.create_table()
+    def __init__(self, parent, controller):
+        self.frame = tk.Frame(parent, bg="#f0f4f7")
+        self.controller = controller  # Referencia al controlador
 
-    def create_table(self):
-        """
-        Crea una tabla con encabezados donde se mostrarán los datos de los productos.
-        """
-        columns = ('ID', 'Nombre', 'Categoría')
+        # Barra de búsqueda
+        search_frame = tk.Frame(self.frame, bg="#f0f4f7")
+        search_frame.pack(pady=10)
+        tk.Label(search_frame, text="Buscar Producto:", bg="#f0f4f7").pack(side="left")
+        self.search_entry = tk.Entry(search_frame)
+        self.search_entry.pack(side="left", padx=5)
+        search_button = tk.Button(search_frame, text="Buscar", command=self.controller.filter_products)
+        search_button.pack(side="left", padx=5)
+        clear_button = tk.Button(search_frame, text="Limpiar", command=self.controller.clear_filters)
+        clear_button.pack(side="left", padx=5)
 
-        self.tree = ttk.Treeview(self.frame, columns=columns, show='headings')
-        self.tree.heading('ID', text='ID')
-        self.tree.heading('Nombre', text='Nombre')
-        self.tree.heading('Categoría', text='Categoría')
+        # Tabla de productos
+        self.tree = ttk.Treeview(self.frame, columns=("ID", "Nombre", "Descripción", "Precio", "Created_At", "Updated_At"), show="headings")
+        self.tree.heading("ID", text="ID")
+        self.tree.heading("Nombre", text="Nombre")
+        self.tree.heading("Descripción", text="Descripción")
+        self.tree.heading("Precio", text="Precio")
+        self.tree.heading("Created_At", text="Fecha Creación")
+        self.tree.heading("Updated_At", text="Fecha Modificación")
 
-        # Añadir scroll vertical
-        scrollbar = ttk.Scrollbar(self.frame, orient="vertical", command=self.tree.yview)
-        self.tree.configure(yscrollcommand=scrollbar.set)
-        scrollbar.pack(side="right", fill="y")
+        self.tree.column("ID", width=50)
+        self.tree.column("Nombre", width=150)
+        self.tree.column("Descripción", width=200)
+        self.tree.column("Precio", width=80)
+        self.tree.column("Created_At", width=150)
+        self.tree.column("Updated_At", width=150)
 
-        self.tree.pack(expand=True, fill="both")
+        self.tree.pack(expand=True, fill="both", padx=20, pady=10)
+
+        # Botones de acción
+        button_frame = tk.Frame(self.frame, bg="#f0f4f7")
+        button_frame.pack(pady=10)
+
+        add_button = tk.Button(button_frame, text="Agregar Producto", font=("Arial", 10, "bold"),
+                               bg="#2196F3", fg="white", command=self.controller.add_product)
+        add_button.pack(side="left", padx=5)
+
+        edit_button = tk.Button(button_frame, text="Editar Producto", font=("Arial", 10, "bold"),
+                                bg="#FFC107", fg="black", command=self.controller.edit_product)
+        edit_button.pack(side="left", padx=5)
+
+        delete_button = tk.Button(button_frame, text="Eliminar Producto", font=("Arial", 10, "bold"),
+                                  bg="#f44336", fg="white", command=self.controller.delete_product)
+        delete_button.pack(side="left", padx=5)
 
     def display_products(self, data):
-        """
-        Limpia la tabla y muestra los productos pasados como argumento.
-        """
-        # Limpiar la tabla
+        """Muestra los productos en la tabla"""
         for item in self.tree.get_children():
             self.tree.delete(item)
+        for product in data:
+            self.tree.insert("", "end", values=(product["ID"], product["Nombre"], product["Descripción"], product["Precio"],
+                                                product["Created_At"], product["Updated_At"]))
 
-        # Añadir los productos a la tabla
-        for item in data:
-            self.tree.insert('', tk.END, values=(item['ID'], item['Nombre'], item['Categoría']))
+    def get_search_entry(self):
+        """Obtiene el texto ingresado en el campo de búsqueda."""
+        return self.search_entry.get()
+
+    def get_selected_product(self):
+        """Obtiene el producto seleccionado en la tabla."""
+        selected_item = self.tree.focus()
+        if selected_item:
+            return self.tree.item(selected_item)['values']
+        return None
 
     def get_frame(self):
-        """
-        Retorna el frame que contiene la vista de productos.
-        """
         return self.frame
