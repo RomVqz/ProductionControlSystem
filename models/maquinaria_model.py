@@ -88,6 +88,6 @@ class MaquinasModel:
             p for p in self.get_maquinas()
             if (search_term in str(p["id"]).lower() or
                 search_term in p["nombre"].lower()or
-                search_term in p["estado"].lower() )
+                search_term in p["estado"].lower())
 
         ]
