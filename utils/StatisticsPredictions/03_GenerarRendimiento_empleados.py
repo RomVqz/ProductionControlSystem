@@ -7,7 +7,7 @@ from sklearn.linear_model import LinearRegression
 import numpy as np
 
 # Cargar datos del CSV
-df = pd.read_csv('C:/Users/mottu/Documents/NTT/Equipo/CSV/rendimiento_empleados.csv')
+df = pd.read_csv('C:/Users/mottu/PycharmProjects/ProductionControlSystem/utils/DATA/03_Rendimiento_empleados.csv')
 
 # Convertir fechas a formato datetime
 df['fecha'] = pd.to_datetime(df['fecha'], format='%d/%m/%Y')

@@ -6,7 +6,7 @@ from sklearn.linear_model import LinearRegression
 import numpy as np
 
 # Cargar los datos generados
-df = pd.read_csv('C:/Users/mottu/Documents/NTT/Equipo/CSV/produccion_historica.csv')
+df = pd.read_csv('C:/Users/mottu/PycharmProjects/ProductionControlSystem/utils/DATA/01_produccion_historica.csv')
 
 # Estadísticas: Producción diaria, semanal, mensual
 df['fecha'] = pd.to_datetime(df['fecha'], format='%d/%m/%Y')

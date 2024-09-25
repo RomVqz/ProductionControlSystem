@@ -5,7 +5,7 @@ import seaborn as sns
 from datetime import datetime
 
 # Cargar datos del CSV
-df = pd.read_csv('C:/Users/mottu/Documents/NTT/Equipo/CSV/tiempo_inactividad_maquinas.csv')
+df = pd.read_csv('C:/Users/mottu/PycharmProjects/ProductionControlSystem/utils/DATA/02_tiempo_inactividad_maquinas.csv')
 
 # Convertir fechas a formato datetime
 df['fecha_inicio'] = pd.to_datetime(df['fecha_inicio'], format='%d/%m/%Y %H:%M')

@@ -7,7 +7,7 @@ import numpy as np
 from datetime import datetime
 
 # Cargar datos del CSV
-df = pd.read_csv('C:/Users/mottu/Documents/NTT/Equipo/CSV/kpis_produccion.csv')
+df = pd.read_csv('C:/Users/mottu/PycharmProjects/ProductionControlSystem/utils/DATA/03_Rendimiento_empleados.csv')
 
 # Convertir fechas a formato datetime
 df['fecha'] = pd.to_datetime(df['fecha'], format='%d/%m/%Y')

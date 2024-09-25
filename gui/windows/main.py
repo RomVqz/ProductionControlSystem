@@ -1,10 +1,13 @@
 import tkinter as tk
 from tkinter import Menu
+
+from Controllers.dashboard_controller import StatisticsController
 from Controllers.material_controller import MaterialsController
 from Controllers.empleado_controller import EmpleadoController
 from Controllers.maquinaria_controller import MaquinaController
 from Controllers.orden_produccion_controller import OrdenesProduccionController  # Importar correctamente
 from Controllers.producto_controller import ProductoController
+
 
 # Función para mostrar el menú de Materiales
 def show_material_menu():
@@ -12,11 +15,13 @@ def show_material_menu():
     material_controller = MaterialsController(content_frame)  # Instanciar el controlador
     material_controller.get_view().pack(expand=True, fill="both")  # Mostrar la vista
 
+
 # Función para mostrar el menú de Productos
 def show_product_menu():
     clear_container()
     producto_controller = ProductoController(content_frame)
     producto_controller.get_view().pack(expand=True, fill="both")
+
 
 # Función para mostrar el menú de Empleados
 def show_employee_menu():
@@ -24,11 +29,13 @@ def show_employee_menu():
     empleado_controller = EmpleadoController(content_frame)
     empleado_controller.get_view().pack(expand=True, fill="both")
 
+
 # Función para mostrar el menú de Maquinaria
 def show_machinery_menu():
     clear_container()
     maquinaria_controller = MaquinaController(content_frame)
     maquinaria_controller.get_view().pack(expand=True, fill="both")
+
 
 # Función para desplegar el menú "Materia" con subopciones "Materiales" y "Productos"
 def show_materia_menu():
@@ -38,31 +45,38 @@ def show_materia_menu():
     # Mostrar el menú justo debajo del botón "Materia"
     materia_menu.post(materia_button.winfo_rootx(), materia_button.winfo_rooty() + materia_button.winfo_height())
 
+
 # Función para desplegar el menú "Asignación" con subopciones "Empleados" y "Maquinaria"
 def show_assignment_menu():
     assignment_menu = Menu(assignment_button, tearoff=0)
     assignment_menu.add_command(label="Empleados", command=show_employee_menu)
     assignment_menu.add_command(label="Maquinaria", command=show_machinery_menu)
     # Mostrar el menú justo debajo del botón "Asignación"
-    assignment_menu.post(assignment_button.winfo_rootx(), assignment_button.winfo_rooty() + assignment_button.winfo_height())
+    assignment_menu.post(assignment_button.winfo_rootx(),
+                         assignment_button.winfo_rooty() + assignment_button.winfo_height())
+
 
 # Función para mostrar el dashboard
 def show_dashboard():
     clear_container()
-    label = tk.Label(content_frame, text="Dashboard", font=("Arial", 24), fg="#333")
-    label.pack(expand=True)
+    dashboard_controller = StatisticsController(content_frame)
+    dashboard_controller.get_view().pack(expand=True, fill="both")
+
 
 # Función para mostrar el menú de Órdenes de Producción
 def show_produccion_menu():
     clear_container()
-    ordenes_controller = OrdenesProduccionController(content_frame)  # Instanciar el controlador de órdenes de producción
+    ordenes_controller = OrdenesProduccionController(
+        content_frame)  # Instanciar el controlador de órdenes de producción
     ordenes_controller.get_view().pack(expand=True, fill="both")  # Mostrar la vista
+
 
 # Función para limpiar el contenido del container central
 def clear_container():
     """Elimina todos los widgets existentes dentro del content_frame para preparar el espacio."""
     for widget in content_frame.winfo_children():
         widget.destroy()
+
 
 # Configuración principal de la ventana
 root = tk.Tk()
