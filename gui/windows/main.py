@@ -60,15 +60,11 @@ def show_dashboard():
     label.pack(expand=True)
 
 # Función para mostrar la orden de producción
-class Production_orderController:
-    pass
-
-
 def show_production_order():
     clear_container()
-    orden_prudccion_controller = Production_orderController(content_frame)
-    orden_prudccion_controller.show_production_order()
-    orden_prudccion_controller.get_view().pack(expand=True, fill="both")
+    orden_produccion_controller = Production_orderController(content_frame)
+    orden_produccion_controller.show_production_order()
+    orden_produccion_controller.get_view().pack(expand=True, fill="both")
 
 # Función para limpiar el contenido del container central
 def clear_container():

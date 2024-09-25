@@ -1,7 +1,6 @@
 from gui.windows.orden_produccion_view import Production_orderView
 from models.orden_produccion_model import Production_orderModel
 
-
 class Production_orderController:
     def __init__(self, root):
         self.model = Production_orderModel()
